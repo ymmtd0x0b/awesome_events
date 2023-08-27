@@ -4,12 +4,7 @@ RSpec.describe User, type: :model do
   describe '.find_or_create_from_auth_hash!' do
     context 'データベースに該当するユーザーを見つけた場合' do
       it "そのユーザーレコードを返すこと" do
-        user = User.create(
-          provider:  'github',
-          uid:       '12345',
-          name:      'alice',
-          image_url: 'https://example.com/12345.jpg',
-        )
+        user = FactoryBot.create(:user, provider: 'github', uid: '12345')
 
         # 完璧なハッシュデータでは
         # ・ユーザーを発見できたのか
@@ -77,34 +72,11 @@ RSpec.describe User, type: :model do
   end
 
   describe '#destroy' do
-    before do
-      @user = User.create(
-        provider:  'github',
-        uid:       '12345',
-        name:      'alice',
-        image_url: 'https://example.com/12345.jpg',
-      )
-
-      @other_user = User.create(
-        provider:  'github',
-        uid:       '54321',
-        name:      'bob',
-        image_url: 'https://example.com/54321.jpg',
-      )
-    end
-
     context '主催するイベントが終了している場合' do
       it 'ユーザーの削除に成功すること' do
         travel_to '2000-08-01 00:00'.in_time_zone do
-          Event.create(
-            name: 'Every Rails 輪読会',
-            content: '終了したイベント',
-            place: 'discord',
-            start_at: '2000-07-31 23:00'.in_time_zone,
-            end_at:   '2000-07-31 23:59'.in_time_zone,
-            owner: @user,
-          )
-          expect { @user.destroy }.to change(User, :count).by(-1)
+          user = FactoryBot.create(:user, :with_finished_event)
+          expect { user.destroy }.to change(User, :count).by(-1)
         end
       end
     end
@@ -112,15 +84,8 @@ RSpec.describe User, type: :model do
     context '主催するイベントが終了していない場合' do
       it 'ユーザーの削除に失敗すること' do
         travel_to '2000-08-01 00:00'.in_time_zone do
-          Event.create(
-            name: 'Every Rails 輪読会',
-            content: '公開中の未終了イベント',
-            place: 'discord',
-            start_at: '2000-08-01 00:00'.in_time_zone,
-            end_at:   '2000-08-01 01:00'.in_time_zone,
-            owner: @user,
-          )
-          expect(@user.destroy).to eq false
+          user = FactoryBot.create(:user, :with_publishing_event)
+          expect(user.destroy).to eq false
         end
       end
     end
@@ -128,16 +93,8 @@ RSpec.describe User, type: :model do
     context '参加表明したイベントが終了している場合' do
       it 'ユーザーの削除に成功すること' do
         travel_to '2000-08-01 00:00'.in_time_zone do
-          event = Event.create(
-            name: 'Every Rails 輪読会',
-            content: '終了したイベント',
-            place: 'discord',
-            start_at: '2000-07-31 23:00'.in_time_zone,
-            end_at:   '2000-07-31 23:59'.in_time_zone,
-            owner: @other_user,
-          )
-          event.tickets.create(user: @user)
-          expect { @user.destroy }.to change(User, :count).by(-1)
+          user = FactoryBot.create(:user, :with_participating_event_that_has_finished)
+          expect { user.destroy }.to change(User, :count).by(-1)
         end
       end
     end
@@ -145,16 +102,8 @@ RSpec.describe User, type: :model do
     context '参加表明したイベントが終了していない場合' do
       it 'ユーザーの削除に失敗すること' do
         travel_to '2000-08-01 00:00'.in_time_zone do
-          event = Event.create(
-            name: 'Every Rails 輪読会',
-            content: '公開中の未終了イベント',
-            place: 'discord',
-            start_at: '2000-08-01 00:00'.in_time_zone,
-            end_at:   '2000-08-01 01:00'.in_time_zone,
-            owner: @other_user,
-          )
-          event.tickets.create(user: @user)
-          expect(@user.destroy).to eq false
+          user = FactoryBot.create(:user, :with_participating_event)
+          expect(user.destroy).to eq false
         end
       end
     end
