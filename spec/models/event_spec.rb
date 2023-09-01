@@ -48,38 +48,9 @@ RSpec.describe Event, type: :model do
     expect(event.errors[:end_at]).to include('を入力してください')
   end
 
-  it 'is valid with a name less than 50 characters' do
-    event = FactoryBot.build(:event, name: 'a' * 50)
-    expect(event).to be_valid
-  end
-
-  it 'is invalid with a name of more than 50 characters' do
-    event = FactoryBot.build(:event, name: 'a' * 51)
-    event.valid?
-    expect(event.errors[:name]).to include('は50文字以内で入力してください')
-  end
-
-  it 'is valid with a place less than 100 characters' do
-    event = FactoryBot.build(:event, place: 'a' * 100)
-    expect(event).to be_valid
-  end
-
-  it 'is invalid with a place of more than 100 characters' do
-    event = FactoryBot.build(:event, place: 'a' * 101)
-    event.valid?
-    expect(event.errors[:place]).to include('は100文字以内で入力してください')
-  end
-
-  it 'is valid with a content less than 2000 characters' do
-    event = FactoryBot.build(:event, content: 'a' * 2000)
-    expect(event).to be_valid
-  end
-
-  it 'is invalid with a content of more than 2000 characters' do
-    event = FactoryBot.build(:event, content: 'a' * 2001)
-    event.valid?
-    expect(event.errors[:content]).to include('は2000文字以内で入力してください')
-  end
+  it { is_expected.to validate_length_of(:name).is_at_most(50) }
+  it { is_expected.to validate_length_of(:place).is_at_most(100) }
+  it { is_expected.to validate_length_of(:content).is_at_most(2000) }
 
   it 'is valid with start at should be before end at' do
     event = FactoryBot.build(:event,
