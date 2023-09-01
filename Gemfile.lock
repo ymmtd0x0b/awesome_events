@@ -286,6 +286,8 @@ GEM
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
     semantic_range (3.0.0)
+    shoulda-matchers (5.3.0)
+      activesupport (>= 5.2.0)
     simplecov (0.18.5)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -363,6 +365,7 @@ DEPENDENCIES
   sass-rails (>= 6)
   searchkick (~> 4.3.0)
   selenium-webdriver
+  shoulda-matchers
   simplecov
   spring
   spring-watcher-listen (~> 2.0.0)
