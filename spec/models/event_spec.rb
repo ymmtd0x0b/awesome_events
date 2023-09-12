@@ -13,8 +13,8 @@ RSpec.describe Event, type: :model do
       name:     'Every Rails 輪読会',
       place:    'discord',
       content:  'RSpecを学習します。',
-      start_at: Time.zone.now,
-      end_at:   Time.zone.now + 1.hour,
+      start_at: '2000-11-11 09:00'.in_time_zone,
+      end_at:   '2000-11-11 10:00'.in_time_zone,
       owner:    user,
     )
   end
@@ -87,15 +87,15 @@ RSpec.describe Event, type: :model do
   end
 
   it 'is valid with start at should be before end at' do
-    @event.start_at = Time.zone.now
-    @event.end_at   = Time.zone.now + 1.hour
+    @event.start_at = '2000-11-11 09:00'.in_time_zone
+    @event.end_at   = '2000-11-11 10:00'.in_time_zone
     expect(@event).to be_valid
   end
 
   it 'is invalid with start at should be after end at' do
     event = Event.new(
-      start_at: Time.zone.now,
-      end_at:   Time.zone.now - 1.hour,
+      start_at: '2000-11-11 10:00'.in_time_zone,
+      end_at:   '2000-11-11 09:00'.in_time_zone,
     )
     event.valid?
     expect(event.errors[:start_at]).to include('は終了時間よりも前に設定してください')
@@ -170,8 +170,8 @@ RSpec.describe Event, type: :model do
         name:     'Every Rails 輪読会',
         place:    'discord',
         content:  'RSpecを学習します。',
-        start_at: Time.zone.now,
-        end_at:   Time.zone.now + 1.hour,
+        start_at: '2000-11-11 09:00'.in_time_zone,
+        end_at:   '2000-11-11 10:00'.in_time_zone,
         owner:    @alice,
       )
       expect(event.created_by?(@alice)).to eq true
@@ -189,8 +189,8 @@ RSpec.describe Event, type: :model do
         name:     'Every Rails 輪読会',
         place:    'discord',
         content:  'RSpecを学習します。',
-        start_at: Time.zone.now,
-        end_at:   Time.zone.now + 1.hour,
+        start_at: '2000-11-11 09:00'.in_time_zone,
+        end_at:   '2000-11-11 10:00'.in_time_zone,
         owner:    bob,
       )
       expect(event.created_by?(@alice)).to eq false

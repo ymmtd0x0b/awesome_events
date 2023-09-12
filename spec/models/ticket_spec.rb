@@ -19,8 +19,8 @@ RSpec.describe Ticket, type: :model do
       name:     'Every Rails 輪読会',
       place:    'discord',
       content:  'RSpecを学習します。',
-      start_at: Time.zone.now,
-      end_at:   Time.zone.now + 1.hour,
+      start_at: '2000-11-11 09:00'.in_time_zone,
+      end_at:   '2000-11-11 10:00'.in_time_zone,
       owner:    event_owner,
     )
   end

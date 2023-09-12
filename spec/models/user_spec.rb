@@ -95,13 +95,13 @@ RSpec.describe User, type: :model do
 
     context 'when user does not has publishing events' do
       it 'is successes destory record' do
-        travel_to Time.local(2000, 3, 1, 0, 0) do
+        travel_to '2000-08-01 00:00'.in_time_zone do
           Event.create(
             name: 'Every Rails 輪読会',
             content: '終了イベント',
             place: 'discord',
-            start_at: Time.now.prev_month,
-            end_at:   Time.now.prev_month + 1.hour,
+            start_at: '2000-07-31 23:00'.in_time_zone,
+            end_at:   '2000-07-31 23:59'.in_time_zone,
             owner: @user,
           )
           expect { @user.destroy }.to change(User, :count).by(-1)
@@ -111,13 +111,13 @@ RSpec.describe User, type: :model do
 
     context 'when user has publishing events' do
       it 'abort destroy record with returns an error message' do
-        travel_to Time.local(2000, 3, 1, 0, 0) do
+        travel_to '2000-08-01 00:00'.in_time_zone do
           Event.create(
             name: 'Every Rails 輪読会',
             content: '公開中の未終了イベント',
             place: 'discord',
-            start_at: Time.now.next_month,
-            end_at:   Time.now.next_month + 1.hour,
+            start_at: '2000-08-01 00:00'.in_time_zone,
+            end_at:   '2000-08-01 01:00'.in_time_zone,
             owner: @user,
           )
           @user.destroy
@@ -128,13 +128,13 @@ RSpec.describe User, type: :model do
 
     context 'when user does not has participating events' do
       it 'is successes destory record' do
-        travel_to Time.local(2000, 3, 1, 0, 0) do
+        travel_to '2000-08-01 00:00'.in_time_zone do
           event = Event.create(
             name: 'Every Rails 輪読会',
             content: '終了イベント',
             place: 'discord',
-            start_at: Time.now.prev_month,
-            end_at:   Time.now.prev_month + 1.hour,
+            start_at: '2000-07-31 23:00'.in_time_zone,
+            end_at:   '2000-07-31 23:59'.in_time_zone,
             owner: @other_user,
           )
           event.tickets.create(user: @user)
@@ -145,13 +145,13 @@ RSpec.describe User, type: :model do
 
     context 'when user has participating events' do
       it 'abort destroy record with returns an error message' do
-        travel_to Time.local(2000, 3, 1, 0, 0) do
+        travel_to '2000-08-01 00:00'.in_time_zone do
           event = Event.create(
             name: 'Every Rails 輪読会',
             content: '公開中の未終了イベント',
             place: 'discord',
-            start_at: Time.now.next_month,
-            end_at:   Time.now.next_month + 1.hour,
+            start_at: '2000-08-01 00:00'.in_time_zone,
+            end_at:   '2000-08-01 01:00'.in_time_zone,
             owner: @other_user,
           )
           event.tickets.create(user: @user)
