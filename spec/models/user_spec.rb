@@ -8,7 +8,7 @@ RSpec.describe User, type: :model do
           provider:  'github',
           uid:       '12345',
           name:      'alice',
-          image_url: 'https://image.com/12345',
+          image_url: 'https://example.com/12345.jpg',
         )
 
         # 完璧なハッシュデータでは
@@ -35,7 +35,7 @@ RSpec.describe User, type: :model do
           uid:      '12345',
           info: {
             nickname:  'alice',
-            image: 'https://image.com/12345',
+            image: 'https://example.com/12345.jpg',
           }
         }
       end
@@ -82,14 +82,14 @@ RSpec.describe User, type: :model do
         provider:  'github',
         uid:       '12345',
         name:      'alice',
-        image_url: 'https://image.com/12345',
+        image_url: 'https://example.com/12345.jpg',
       )
 
       @other_user = User.create(
         provider:  'github',
         uid:       '54321',
         name:      'bob',
-        image_url: 'https://image.com/54321',
+        image_url: 'https://example.com/54321.jpg',
       )
     end
 

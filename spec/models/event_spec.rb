@@ -6,7 +6,7 @@ RSpec.describe Event, type: :model do
       provider:  'github',
       uid:       '12345',
       name:      'tester',
-      image_url: 'https://image.com/12345',
+      image_url: 'https://example.com/12345.jpg',
     )
 
     @event = Event.new(
@@ -161,7 +161,7 @@ RSpec.describe Event, type: :model do
         provider:  'github',
         uid:       '11111',
         name:      'alice',
-        image_url: 'https://image.com/12345',
+        image_url: 'https://example.com/12345.jpg',
       )
     end
 
@@ -182,7 +182,7 @@ RSpec.describe Event, type: :model do
         provider:  'github',
         uid:       '22222',
         name:      'bob',
-        image_url: 'https://image.com/22222',
+        image_url: 'https://example.com/22222.jpg',
       )
 
       event = Event.create(

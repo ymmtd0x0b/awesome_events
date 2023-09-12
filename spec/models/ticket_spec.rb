@@ -6,14 +6,14 @@ RSpec.describe Ticket, type: :model do
       provider:  'github',
       uid:       '12345',
       name:      'alice',
-      image_url: 'https://image.com/12345',
+      image_url: 'https://example.com/12345.jpg',
     )
 
     event_owner = User.create(
       provider:  'github',
       uid:       '54321',
       name:      'bob',
-      image_url: 'https://image.com/54321',
+      image_url: 'https://example.com/54321.jpg',
     )
     @event = Event.new(
       name:     'Every Rails 輪読会',
