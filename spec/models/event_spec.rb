@@ -24,33 +24,28 @@ RSpec.describe Event, type: :model do
   end
 
   it '名前が空白ならば無効であること' do
-    event = Event.new(name: nil)
-    event.valid?
-    expect(event.errors[:name]).to include('を入力してください')
+    @event.name = nil
+    expect(@event).to be_invalid
   end
 
   it '場所が空白ならば無効であること' do
-    event = Event.new(place: nil)
-    event.valid?
-    expect(event.errors[:place]).to include('を入力してください')
+    @event.place = nil
+    expect(@event).to be_invalid
   end
 
   it '内容が空白ならば無効であること' do
-    event = Event.new(content: nil)
-    event.valid?
-    expect(event.errors[:content]).to include('を入力してください')
+    @event.content = nil
+    expect(@event).to be_invalid
   end
 
   it '開始時間が空白ならば無効であること' do
-    event = Event.new(start_at: nil)
-    event.valid?
-    expect(event.errors[:start_at]).to include('を入力してください')
+    @event.start_at = nil
+    expect(@event).to be_invalid
   end
 
   it '終了時間が空白ならば無効であること' do
-    event = Event.new(end_at: nil)
-    event.valid?
-    expect(event.errors[:end_at]).to include('を入力してください')
+    @event.end_at = nil
+    expect(@event).to be_invalid
   end
 
   it '名前は50文字以下なら有効であること' do
@@ -59,9 +54,8 @@ RSpec.describe Event, type: :model do
   end
 
   it '名前は50文字より多いなら無効であること' do
-    event = Event.new(name: 'a' * 51)
-    event.valid?
-    expect(event.errors[:name]).to include('は50文字以内で入力してください')
+    @event.name = 'a' * 51
+    expect(@event).to be_invalid
   end
 
   it '場所は100文字以下なら有効であること' do
@@ -70,9 +64,8 @@ RSpec.describe Event, type: :model do
   end
 
   it '場所は100文字より多いなら無効であること' do
-    event = Event.new(place: 'a' * 101)
-    event.valid?
-    expect(event.errors[:place]).to include('は100文字以内で入力してください')
+    @event.place = 'a' * 101
+    expect(@event).to be_invalid
   end
 
   it '内容は2000文字以内なら有効であること' do
@@ -81,9 +74,8 @@ RSpec.describe Event, type: :model do
   end
 
   it '内容は2000文字より多いなら無効であること' do
-    event = Event.new(content: 'a' * 2001)
-    event.valid?
-    expect(event.errors[:content]).to include('は2000文字以内で入力してください')
+    @event.content = 'a' * 2001
+    expect(@event).to be_invalid
   end
 
   it '開始時刻が終了時刻より前なら有効であることであること' do
@@ -93,12 +85,9 @@ RSpec.describe Event, type: :model do
   end
 
   it '開始時刻が終了時刻より後なら無効であること' do
-    event = Event.new(
-      start_at: '2000-11-11 10:00'.in_time_zone,
-      end_at:   '2000-11-11 09:00'.in_time_zone,
-    )
-    event.valid?
-    expect(event.errors[:start_at]).to include('は終了時間よりも前に設定してください')
+    @event.start_at = '2000-11-11 10:00'.in_time_zone
+    @event.end_at   = '2000-11-11 09:00'.in_time_zone
+    expect(@event).to be_invalid
   end
 
   it '.png 画像なら有効であること' do
@@ -117,9 +106,8 @@ RSpec.describe Event, type: :model do
   end
 
   it '.png, .jpg, or .jpeg 以外の画像なら無効であることであること' do
-    event = Event.new(image: fixture_file_upload('files/image/sample.gif'))
-    event.valid?
-    expect(event.errors[:image]).to include('のContent Typeが不正です')
+    @event.image = fixture_file_upload('files/image/sample.gif')
+    expect(@event).to be_invalid
   end
 
   it '10MB以下の画像なら有効であること' do
@@ -128,9 +116,8 @@ RSpec.describe Event, type: :model do
   end
 
   it '10MBより大きい画像なら無効であること' do
-    event = Event.new(image: fixture_file_upload('files/image/sample_10.1MB.png'))
-    event.valid?
-    expect(event.errors[:image]).to include('の容量 10.1MB が許容範囲外です')
+    @event.image = fixture_file_upload('files/image/sample_10.1MB.png')
+    expect(@event).to be_invalid
   end
 
   it '横幅 2000px 以下の画像なら有効であること' do
@@ -139,9 +126,8 @@ RSpec.describe Event, type: :model do
   end
 
   it '横幅 2000px より大きい画像なら無効であること' do
-    event = Event.new(image: fixture_file_upload('files/image/sample_2001*2000.png'))
-    event.valid?
-    expect(event.errors[:image]).to include('の横幅は 2000 ピクセル以下にしてください')
+    @event.image = fixture_file_upload('files/image/sample_2001*2000.png')
+    expect(@event).to be_invalid
   end
 
   it '縦幅 2000px 以下の画像なら有効であること' do
@@ -150,9 +136,8 @@ RSpec.describe Event, type: :model do
   end
 
   it '縦幅 2000px より大きい画像なら無効であること' do
-    event = Event.new(image: fixture_file_upload('files/image/sample_2000*2001.png'))
-    event.valid?
-    expect(event.errors[:image]).to include('の縦幅は 2000 ピクセル以下にしてください')
+    @event.image = fixture_file_upload('files/image/sample_2000*2001.png')
+    expect(@event).to be_invalid
   end
 
   describe '.created_by?' do

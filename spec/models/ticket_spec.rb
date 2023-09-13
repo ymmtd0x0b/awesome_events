@@ -46,7 +46,6 @@ RSpec.describe Ticket, type: :model do
       comment: 'a' * 31,
       event:   @event,
     )
-    ticket.valid?
-    expect(ticket.errors[:comment]).to include('は30文字以内で入力してください')
+    expect(ticket).to be_invalid
   end
 end
