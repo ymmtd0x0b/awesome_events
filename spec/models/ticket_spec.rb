@@ -25,7 +25,7 @@ RSpec.describe Ticket, type: :model do
     )
   end
 
-  it 'is valid with a comment of blank' do
+  it 'コメントは空白でも有効であること' do
     ticket = @user.tickets.new(
       comment: nil,
       event:   @event,
@@ -33,7 +33,7 @@ RSpec.describe Ticket, type: :model do
     expect(ticket).to be_valid
   end
 
-  it 'is valid with a comment of less then or equal 30 characters' do
+  it 'コメントは30文字以下なら有効であること' do
     ticket = @user.tickets.new(
       comment: 'a' * 30,
       event:   @event,
@@ -41,7 +41,7 @@ RSpec.describe Ticket, type: :model do
     expect(ticket).to be_valid
   end
 
-  it 'is invalid with a comment of more then 30 characters' do
+  it 'コメントは30文字より多いなら無効であること' do
     ticket = @user.tickets.new(
       comment: 'a' * 31,
       event:   @event,
