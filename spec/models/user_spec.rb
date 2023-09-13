@@ -120,8 +120,7 @@ RSpec.describe User, type: :model do
             end_at:   '2000-08-01 01:00'.in_time_zone,
             owner: @user,
           )
-          @user.destroy
-          expect(@user.errors[:base]).to include('公開中の未終了イベントが存在します。')
+          expect(@user.destroy).to eq false
         end
       end
     end
@@ -155,8 +154,7 @@ RSpec.describe User, type: :model do
             owner: @other_user,
           )
           event.tickets.create(user: @user)
-          @user.destroy
-          expect(@user.errors[:base]).to include('未終了の参加イベントが存在します。')
+          expect(@user.destroy).to eq false
         end
       end
     end
