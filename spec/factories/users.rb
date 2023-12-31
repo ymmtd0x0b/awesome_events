@@ -3,7 +3,7 @@ FactoryBot.define do
     provider       { 'github' }
     sequence(:uid) { |n| n.to_s }
     name           { 'tester' }
-    image_url      { 'https://image.com/12345' }
+    image_url      { 'https://example.com/12345.jpg' }
 
     trait :with_publishing_event do
       after(:create) { |user| FactoryBot.create(:event, owner: user) }
