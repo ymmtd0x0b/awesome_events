@@ -72,10 +72,15 @@ RSpec.describe User, type: :model do
   end
 
   describe '#destroy' do
+    let(:user) { FactoryBot.create(:user) }
+
     context '主催するイベントが終了している場合' do
       it 'ユーザーの削除に成功すること' do
         travel_to '2000-08-01 00:00'.in_time_zone do
-          user = FactoryBot.create(:user, :with_finished_event)
+          FactoryBot.create(:event,
+            start_at: '2000-07-31 09:00',
+            end_at:   '2000-07-31 10:00',
+            owner: user)
           expect { user.destroy }.to change(User, :count).by(-1)
         end
       end
@@ -84,7 +89,10 @@ RSpec.describe User, type: :model do
     context '主催するイベントが終了していない場合' do
       it 'ユーザーの削除に失敗すること' do
         travel_to '2000-08-01 00:00'.in_time_zone do
-          user = FactoryBot.create(:user, :with_publishing_event)
+          FactoryBot.create(:event,
+            start_at: '2000-08-02 09:00',
+            end_at:   '2000-08-02 10:00',
+            owner: user)
           expect(user.destroy).to eq false
         end
       end
@@ -93,7 +101,10 @@ RSpec.describe User, type: :model do
     context '参加表明したイベントが終了している場合' do
       it 'ユーザーの削除に成功すること' do
         travel_to '2000-08-01 00:00'.in_time_zone do
-          user = FactoryBot.create(:user, :with_participating_event_that_has_finished)
+          yesterday_event = FactoryBot.create(:event,
+                              start_at: '2000-07-31 09:00',
+                              end_at:   '2000-07-31 10:00')
+          FactoryBot.create(:ticket, user: user, event: yesterday_event)
           expect { user.destroy }.to change(User, :count).by(-1)
         end
       end
@@ -102,7 +113,10 @@ RSpec.describe User, type: :model do
     context '参加表明したイベントが終了していない場合' do
       it 'ユーザーの削除に失敗すること' do
         travel_to '2000-08-01 00:00'.in_time_zone do
-          user = FactoryBot.create(:user, :with_participating_event)
+          tomorrow_event = FactoryBot.create(:event,
+                            start_at: '2000-08-02 09:00',
+                            end_at:   '2000-08-02 10:00')
+          FactoryBot.create(:ticket, user: user, event: tomorrow_event)
           expect(user.destroy).to eq false
         end
       end
