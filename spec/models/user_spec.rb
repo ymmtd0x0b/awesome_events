@@ -78,8 +78,8 @@ RSpec.describe User, type: :model do
       it 'ユーザーの削除に成功すること' do
         travel_to '2000-08-01 00:00'.in_time_zone do
           FactoryBot.create(:event,
-            start_at: '2000-07-31 09:00',
-            end_at:   '2000-07-31 10:00',
+            start_at: '2000-07-31 09:00'.in_time_zone,
+            end_at:   '2000-07-31 10:00'.in_time_zone,
             owner: user)
           expect { user.destroy }.to change(User, :count).by(-1)
         end
@@ -90,8 +90,8 @@ RSpec.describe User, type: :model do
       it 'ユーザーの削除に失敗すること' do
         travel_to '2000-08-01 00:00'.in_time_zone do
           FactoryBot.create(:event,
-            start_at: '2000-08-02 09:00',
-            end_at:   '2000-08-02 10:00',
+            start_at: '2000-08-02 09:00'.in_time_zone,
+            end_at:   '2000-08-02 10:00'.in_time_zone,
             owner: user)
           expect(user.destroy).to eq false
         end
@@ -102,8 +102,8 @@ RSpec.describe User, type: :model do
       it 'ユーザーの削除に成功すること' do
         travel_to '2000-08-01 00:00'.in_time_zone do
           yesterday_event = FactoryBot.create(:event,
-                              start_at: '2000-07-31 09:00',
-                              end_at:   '2000-07-31 10:00')
+                              start_at: '2000-07-31 09:00'.in_time_zone,
+                              end_at:   '2000-07-31 10:00'.in_time_zone)
           FactoryBot.create(:ticket, user: user, event: yesterday_event)
           expect { user.destroy }.to change(User, :count).by(-1)
         end
@@ -114,8 +114,8 @@ RSpec.describe User, type: :model do
       it 'ユーザーの削除に失敗すること' do
         travel_to '2000-08-01 00:00'.in_time_zone do
           tomorrow_event = FactoryBot.create(:event,
-                            start_at: '2000-08-02 09:00',
-                            end_at:   '2000-08-02 10:00')
+                            start_at: '2000-08-02 09:00'.in_time_zone,
+                            end_at:   '2000-08-02 10:00'.in_time_zone)
           FactoryBot.create(:ticket, user: user, event: tomorrow_event)
           expect(user.destroy).to eq false
         end
