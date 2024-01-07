@@ -74,50 +74,66 @@ RSpec.describe User, type: :model do
   describe '#destroy' do
     let(:user) { FactoryBot.create(:user) }
 
-    context '主催するイベントが終了している場合' do
-      it 'ユーザーの削除に成功すること' do
-        travel_to '2000-08-01 00:00'.in_time_zone do
+    context 'イベントの主催者(オーナー)である場合' do
+      it 'まだ開催されていないなら、ユーザー削除できないこと' do
+        travel_to '2000-08-01 00:30'.in_time_zone do
           FactoryBot.create(:event,
-            start_at: '2000-07-31 09:00'.in_time_zone,
-            end_at:   '2000-07-31 10:00'.in_time_zone,
+            start_at: '2000-08-01 00:31'.in_time_zone,
+            end_at:   '2000-08-01 00:40'.in_time_zone,
+            owner: user)
+          expect(user.destroy).to eq false
+        end
+      end
+
+      it 'ちょうど開催中なら、ユーザー削除できないこと' do
+        travel_to '2000-08-01 00:30'.in_time_zone do
+          FactoryBot.create(:event,
+            start_at: '2000-08-01 00:20'.in_time_zone,
+            end_at:   '2000-08-01 00:40'.in_time_zone,
+            owner: user)
+          expect(user.destroy).to eq false
+        end
+      end
+
+      it 'もう開催終了しているなら、ユーザー削除できること' do
+        travel_to '2000-08-01 00:30'.in_time_zone do
+          FactoryBot.create(:event,
+            start_at: '2000-08-01 00:20'.in_time_zone,
+            end_at:   '2000-08-01 00:29'.in_time_zone,
             owner: user)
           expect { user.destroy }.to change(User, :count).by(-1)
         end
       end
     end
 
-    context '主催するイベントが終了していない場合' do
-      it 'ユーザーの削除に失敗すること' do
-        travel_to '2000-08-01 00:00'.in_time_zone do
-          FactoryBot.create(:event,
-            start_at: '2000-08-02 09:00'.in_time_zone,
-            end_at:   '2000-08-02 10:00'.in_time_zone,
-            owner: user)
-          expect(user.destroy).to eq false
-        end
-      end
-    end
-
-    context '参加表明したイベントが終了している場合' do
-      it 'ユーザーの削除に成功すること' do
-        travel_to '2000-08-01 00:00'.in_time_zone do
+    context 'イベントの参加者である場合' do
+      it 'まだ開催されていないなら、ユーザー削除できないこと' do
+        travel_to '2000-08-01 00:30'.in_time_zone do
           yesterday_event = FactoryBot.create(:event,
-                              start_at: '2000-07-31 09:00'.in_time_zone,
-                              end_at:   '2000-07-31 10:00'.in_time_zone)
+                              start_at: '2000-08-01 00:31'.in_time_zone,
+                              end_at:   '2000-08-01 00:40'.in_time_zone)
           FactoryBot.create(:ticket, user: user, event: yesterday_event)
-          expect { user.destroy }.to change(User, :count).by(-1)
+          expect(user.destroy).to eq false
         end
       end
-    end
 
-    context '参加表明したイベントが終了していない場合' do
-      it 'ユーザーの削除に失敗すること' do
-        travel_to '2000-08-01 00:00'.in_time_zone do
-          tomorrow_event = FactoryBot.create(:event,
-                            start_at: '2000-08-02 09:00'.in_time_zone,
-                            end_at:   '2000-08-02 10:00'.in_time_zone)
-          FactoryBot.create(:ticket, user: user, event: tomorrow_event)
+      it 'ちょうど開催中なら、ユーザー削除できないこと' do
+        travel_to '2000-08-01 00:30'.in_time_zone do
+          yesterday_event = FactoryBot.create(:event,
+                              start_at: '2000-08-01 00:20'.in_time_zone,
+                              end_at:   '2000-08-01 00:40'.in_time_zone)
+          FactoryBot.create(:ticket, user: user, event: yesterday_event)
           expect(user.destroy).to eq false
+        end
+      end
+
+      it 'もう開催終了しているなら、ユーザー削除できること' do
+        travel_to '2000-08-01 00:30'.in_time_zone do
+          tomorrow_event = FactoryBot.create(:event,
+                            start_at: '2000-08-01 00:20'.in_time_zone,
+                            end_at:   '2000-08-01 00:29'.in_time_zone)
+          FactoryBot.create(:ticket, user: user, event: tomorrow_event)
+          expect{ user.destroy }.to change(User, :count).by(-1)
         end
       end
     end
