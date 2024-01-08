@@ -76,14 +76,14 @@ RSpec.describe Event, type: :model do
   it '開始時刻が終了時刻より前なら有効であることであること' do
     event = FactoryBot.build(:event,
       start_at: '2000-11-11 09:00'.in_time_zone,
-      end_at:   '2000-11-11 10:00'.in_time_zone
+      end_at:   '2000-11-11 09:01'.in_time_zone
     )
     expect(event).to be_valid
   end
 
   it '開始時刻が終了時刻より後なら無効であること' do
     event = FactoryBot.build(:event,
-      start_at: '2000-11-11 10:00'.in_time_zone,
+      start_at: '2000-11-11 09:01'.in_time_zone,
       end_at:   '2000-11-11 09:00'.in_time_zone
     )
     expect(event).to be_invalid
